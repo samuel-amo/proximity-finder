@@ -1,0 +1,132 @@
+services:
+  eureka-server:
+    image: samuelamo/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_PORT=8761
+      - EUREKA_HOSTNAME=eureka-server
+    networks:
+      - app-network
+
+  gateway-server:
+    image: samuelamo/gateway-server-new:latest
+    container_name: gateway-server
+    ports:
+      - "8888:8888"
+    environment:
+      - EUREKA_HOSTNAME=eureka-server
+      - EUREKA_PORT=8761
+      - JWT_SECRET=SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E
+    depends_on:
+      - eureka-server
+    networks:
+      - app-network
+
+  help-and-support:
+    image: samuelamo/help-and-support:latest
+    container_name: help-and-support
+    ports:
+      - "8040:8040"
+    environment:
+      - EUREKA_HOSTNAME=eureka-server
+      - EUREKA_PORT=8761
+      - JWT_SECRET=SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E
+      - POSTGRES_URI=jdbc:postgresql://postgres:5432/support_db
+      - POSTGRES_USER=postgres
+      - PASSWORD=deeplearning89629202@#$!
+    depends_on:
+      - eureka-server
+    networks:
+      - app-network
+
+  notification-service:
+    image: samuelamo/notification-service:latest
+    container_name: notification-service
+    environment:
+      - EUREKA_HOSTNAME=eureka-server
+      - EUREKA_PORT=8761
+      - JWT_SECRET=SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E
+      - RABBITMQ_USERNAME=guest
+      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_PORT=5672
+      - HOST_NAME=rabbitmq
+      - SENDGRID_PASSWORD=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
+    depends_on:
+      - eureka-server
+    networks:
+      - app-network
+
+  request-management-service:
+    image: samuelamo/new-request-management-service:v1
+    container_name: request-management-service
+    environment:
+      - EUREKA_HOSTNAME=eureka-server
+      - EUREKA_PORT=8761
+      - SERVER_PORT=9000
+      - HOST_NAME=rabbitmq
+      - JWT_SECRET=SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/support_db
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=deeplearning89629202@#$!
+      - AWS_ACCESS_KEY=AKIAYS2NQEZAT47GJVPQ
+      - AWS_SECRET_KEY=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
+      - BUCKET_NAME=gtp-group-three-lms
+      - AWS_REGION=us-east-2
+    depends_on:
+      - eureka-server
+    networks:
+      - app-network
+
+  service-provider-profile:
+    image: samuelamo/provoder-profile-service:latest
+    container_name: service-provider-profile
+    environment:
+      - EUREKA_HOSTNAME=eureka-server
+      - EUREKA_PORT=8761
+      - JWT_SECRET=SGEIE84358FDBOUDD723HE084HTDF713EGSJDIG5HS72GSD91BSAIFSY3EESDT5TGVKLNA9363BA3E
+      - POSTGRES_URL=jdbc:postgresql://postgres:5432/support_db
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=deeplearning89629202@#$!
+      - S3_ACCESS_KEY_ID=AKIAYS2NQEZAT47GJVPQ
+      - S3_SECRET_ACCESS_KEY=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
+      - BUCKET_NAME=gtp-group-three-lms
+    depends_on:
+      - eureka-server
+    networks:
+      - app-network
+
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=support_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=deeplearning89629202@#$!
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
