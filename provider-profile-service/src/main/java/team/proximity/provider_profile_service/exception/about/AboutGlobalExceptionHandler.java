@@ -10,6 +10,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import team.proximity.provider_profile_service.common.ApiErrorResponse;
 import team.proximity.provider_profile_service.exception.payment_method.FileTypeNotSupportedException;
 
@@ -20,125 +22,69 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestControllerAdvice
-public class AboutGlobalExceptionHandler {
+public class AboutGlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     private final Logger LOGGER = LoggerFactory.getLogger(AboutGlobalExceptionHandler.class);
 
     @ExceptionHandler(AboutAlreadyExistsException.class)
     public ResponseEntity<ApiErrorResponse> handleAboutAlreadyExistsException(AboutAlreadyExistsException exception, HttpServletRequest request) {
         LOGGER.error("About already exists: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.CONFLICT.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        return buildErrorResponse(exception, request, HttpStatus.CONFLICT);
+
     }
+
     @ExceptionHandler(AboutNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleAboutNotFoundException(AboutNotFoundException exception, HttpServletRequest request) {
         LOGGER.error("About not found: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.NOT_FOUND.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return buildErrorResponse(exception, request, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(UnauthorizedAccessException.class)
     public ResponseEntity<ApiErrorResponse> handleUnauthorizedAccessException(UnauthorizedAccessException exception, HttpServletRequest request) {
         LOGGER.error("Unauthorized access: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.FORBIDDEN.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+        return buildErrorResponse(exception, request, HttpStatus.UNAUTHORIZED);
     }
+
+
 
     @ExceptionHandler(FileTypeNotSupportedException.class)
     public ResponseEntity<ApiErrorResponse> handleFileTypeNotSupportedException(FileTypeNotSupportedException exception, HttpServletRequest request) {
         LOGGER.error("File type not supported: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+      return buildErrorResponse(exception, request, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiErrorResponse> handleGenericException(Exception exception, HttpServletRequest request) {
         LOGGER.error("An unexpected error occurred: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+        return buildErrorResponse(exception, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<ApiErrorResponse> handleIOException(IOException exception, HttpServletRequest request) {
         LOGGER.error("IO Exception occurred: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
+       return buildErrorResponse(exception, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception, HttpServletRequest request) {
         LOGGER.error("Illegal argument: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return buildErrorResponse(exception, request, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<ApiErrorResponse> handleFileUploadException(FileUploadException exception, HttpServletRequest request) {
         LOGGER.error("File upload error: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+       return buildErrorResponse(exception, request, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(UserFileUploadException.class)
     public ResponseEntity<ApiErrorResponse> handleUserFileUploadException(UserFileUploadException exception, HttpServletRequest request) {
         LOGGER.error("User upload error: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return buildErrorResponse(exception, request, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(FileValidationException.class)
     public ResponseEntity<ApiErrorResponse> handleFileValidationException(FileValidationException exception, HttpServletRequest request) {
         LOGGER.error("File validation error: {}", exception.getMessage());
-        ApiErrorResponse errorResponse = new ApiErrorResponse(
-                request.getRequestURI(),
-                exception.getMessage(),
-                HttpStatus.BAD_REQUEST.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return buildErrorResponse(exception, request, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -152,13 +98,16 @@ public class AboutGlobalExceptionHandler {
                 ));
 
         LOGGER.error("Validation failed for request to {}: {}", request.getRequestURI(), fieldErrors);
-        ApiErrorResponse response = new ApiErrorResponse(
+        return buildErrorResponse(ex, request, HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<ApiErrorResponse> buildErrorResponse(Exception exception, HttpServletRequest request, HttpStatus status) {
+        ApiErrorResponse errorResponse = new ApiErrorResponse(
                 request.getRequestURI(),
-                "Validation failed: " + fieldErrors,
-                HttpStatus.BAD_REQUEST.value(),
+                exception.getMessage(),
+                status.value(),
                 LocalDateTime.now()
         );
-
-        return ResponseEntity.badRequest().body(response);
+        return new ResponseEntity<>(errorResponse, status);
     }
 }

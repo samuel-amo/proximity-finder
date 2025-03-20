@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public record BookingRequest(
         @NotNull(message = "Start date is required")
         @Pattern(regexp = "^\\d{2}/\\d{2}/\\d{4}$", message = "Start date must be in format DD/MM/YYYY")
@@ -15,11 +18,11 @@ public record BookingRequest(
 
         @NotNull(message = "End date is required")
         @Pattern(regexp = "^\\d{2}/\\d{2}/\\d{4}$", message = "End date must be in format DD/MM/YYYY")
-        String endDate,
+        LocalDate endDate,
 
         @NotNull(message = "End time is required")
         @Pattern(regexp = "^([01]?[0-9]|2[0-3]):[0-5][0-9]$", message = "End time must be in format HH:mm")
-        String endTime,
+        LocalTime endTime,
 
         @NotBlank(message = "Description is required")
         String description,

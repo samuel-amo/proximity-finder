@@ -7,7 +7,7 @@ public class AboutBusinessMapper {
 
     public AboutBusinessResponse mapToResponse(About about) {
         return new AboutBusinessResponse(
-                about.getBusinessId(),
+                about.getId(),
                 about.getInceptionDate(),
                 about.getSocialMediaLinks(),
                 about.getBusinessIdentityCard(),

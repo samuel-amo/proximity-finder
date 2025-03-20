@@ -34,14 +34,6 @@ public class ServicesController {
     }
 
     @GetMapping
-    @Operation(summary = "Retrieve all services", description = "Returns a list of all available services")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully retrieved list of services",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Services.class))}),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
     public ResponseEntity<ApiSuccessResponse<List<Services>>> getAllServices() {
         log.info("Fetching all services");
         List<Services> servicesList = servicesService.getAllServices();
@@ -52,14 +44,6 @@ public class ServicesController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Retrieve a service by id", description = "Returns a service by id")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully retrieved service by id",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Services.class))}),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
     public ResponseEntity<ApiSuccessResponse<Services>> getServiceById(@PathVariable UUID id) {
         log.info("Fetching service with id: {}", id);
         Services service = servicesService.getServiceById(id);
@@ -71,14 +55,6 @@ public class ServicesController {
 
 
     @PostMapping
-    @Operation(summary = "Create a new service", description = "Creates a new service")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Successfully created a new service",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Services.class))}),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden")
-    })
     public ResponseEntity<ApiSuccessResponse<Services>> createService(@Validated @ModelAttribute ServiceRequest serviceRequest) throws IOException {
         log.info("Creating new service with request: {}", serviceRequest);
         Services createdService = servicesService.createService(serviceRequest);
@@ -90,15 +66,6 @@ public class ServicesController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update a service", description = "Updates")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Successfully updated service",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Services.class))}),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid input"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
     public ResponseEntity<ApiSuccessResponse<Services>> updateService(@PathVariable UUID id, @ModelAttribute UpdateServiceRequest serviceDetails) {
         log.info("Updating service with id: {} and request: {}", id, serviceDetails);
         Services updatedService = servicesService.updateService(id, serviceDetails);
@@ -109,14 +76,6 @@ public class ServicesController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a service", description = "Deletes")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Successfully deleted service",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Services.class))}),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
     public ResponseEntity<ApiSuccessResponse<Void>> deleteService(@PathVariable UUID id) {
         log.info("Deleting service with id: {}", id);
         servicesService.deleteService(id);

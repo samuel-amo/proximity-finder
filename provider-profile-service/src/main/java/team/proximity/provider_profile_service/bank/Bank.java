@@ -18,6 +18,6 @@ public class Bank {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long bankId;
+    private Long id;
     private String bankName;
 }

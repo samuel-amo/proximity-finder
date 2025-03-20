@@ -18,8 +18,7 @@ import java.util.Set;
 public class About {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long businessId;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private Long id;
     private LocalDate inceptionDate;
     @ElementCollection
     private Set<String> socialMediaLinks;

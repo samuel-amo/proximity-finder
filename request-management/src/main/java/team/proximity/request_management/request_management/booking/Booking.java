@@ -3,6 +3,9 @@ package team.proximity.request_management.request_management.booking;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Entity
 @Getter
 @Setter
@@ -15,8 +18,8 @@ public class Booking {
     private Long bookingId;
     private String startDate;
     private String startTime;
-    private String endDate;
-    private String endTime;
+    private LocalDate endDate;
+    private LocalTime endTime;
     private String description;
     private String createdBy;
     private String assignedProvider;

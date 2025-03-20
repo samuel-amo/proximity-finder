@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 @Service
 public class BankServiceImpl implements BankService {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(BankServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BankServiceImpl.class);
 
     private final BankMapper bankMapper;
 

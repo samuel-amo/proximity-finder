@@ -5,17 +5,18 @@ import team.proximity.request_management.request_management.security.SecurityCon
 @Component
 public class BookingMapper {
 
+
     public Booking toBooking(BookingRequest request) {
-        Booking booking = new Booking();
-        booking.setStartDate(request.startDate());
-        booking.setStartTime(request.startTime());
-        booking.setEndDate(request.endDate());
-        booking.setEndTime(request.endTime());
-        booking.setDescription(request.description());
-        booking.setAssignedProvider(request.assignedProvider());
-        booking.setStatus(BookingStatus.PENDING);
-        booking.setCreatedBy(SecurityContextUtils.getEmail());
-        return booking;
+        return Booking.builder()
+                .startDate(request.startDate())
+                .startTime(request.startTime())
+                .endDate(request.endDate())
+                .endTime(request.endTime())
+                .description(request.description())
+                .assignedProvider(request.assignedProvider())
+                .status(BookingStatus.PENDING)
+                .createdBy(SecurityContextUtils.getEmail())
+                .build();
     }
 
 
@@ -24,8 +25,8 @@ public class BookingMapper {
                 booking.getBookingId(),
                 booking.getStartDate(),
                 booking.getStartTime(),
-                booking.getEndDate(),
-                booking.getEndTime(),
+                booking.getEndDate().toString(),
+                booking.getEndTime().toString(),
                 booking.getDescription(),
                 booking.getCreatedBy(),
                 booking.getAssignedProvider(),

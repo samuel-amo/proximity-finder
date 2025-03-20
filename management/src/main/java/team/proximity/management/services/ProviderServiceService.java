@@ -67,7 +67,8 @@ public class ProviderServiceService {
 
     public ProviderService createProviderService(ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
         List<BookingDayRequest> bookingDays = objectMapper.readValue(
-                providerServiceRequest.getBookingDays(), new TypeReference<List<BookingDayRequest>>() {});
+                providerServiceRequest.getBookingDays(), new TypeReference<>() {
+                });
         log.info(LOG_CREATE_PREFERENCE, providerServiceRequest);
         for (BookingDayRequest bookingDayRequest : bookingDays) {
             BookingDayHoursValidator.validate(bookingDayRequest);

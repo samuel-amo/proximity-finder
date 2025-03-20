@@ -10,7 +10,7 @@ import auth.proximity.authservice.enums.AccountStatus;
 
 public interface IUserService {
 
-    public UserInfoResponse getUserInfo(String email);
+    UserInfoResponse getUserInfo(String email);
 
     /**
      *

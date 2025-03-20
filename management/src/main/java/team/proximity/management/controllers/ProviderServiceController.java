@@ -37,16 +37,7 @@ public class ProviderServiceController {
         this.providerServiceService = providerServiceService;
     }
     @PostMapping(consumes = "multipart/form-data")
-    @Operation(summary = "Create or update a provider service", description = "Creates or updates a provider service")
-    @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "204", description = "Successfully deleted service experience"),
-            @ApiResponse(responseCode = "201", description = "Successfully created or updated provider service",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid input"),
-            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
+
     public ResponseEntity<ApiSuccessResponse<ProviderService>> createOrUpdateProviderService(@Validated @ModelAttribute ProviderServiceRequest providerServiceRequest) throws JsonProcessingException {
         log.info("Processing providerService request: {}", providerServiceRequest);
 
@@ -60,14 +51,6 @@ public class ProviderServiceController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     @GetMapping("/email")
-    @Operation(summary = "Retrieve  provider services by user id", description = "Returns a provider service by user id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved provider service by user id",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
-            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
     public ResponseEntity<List<ProviderServiceDTO>> getProviderServiceByUserEmail(@RequestParam String userEmail) {
         log.info("Fetching providerService with userId: {}", userEmail);
 
@@ -78,14 +61,6 @@ public class ProviderServiceController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Retrieve a provider service by id", description = "Returns a provider service by id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved provider service by id",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
-            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
     public ResponseEntity<ApiSuccessResponse<ProviderService>> getProviderServiceById(@PathVariable UUID id) {
         log.info("Fetching providerService with id: {}", id);
 
@@ -101,14 +76,7 @@ public class ProviderServiceController {
     }
 
     @GetMapping
-    @Operation(summary = "Retrieve all provider services", description = "Returns a list of all available provider services")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully retrieved list of provider services",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProviderService.class))),
-            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
+
     public ResponseEntity<ApiSuccessResponse<Page<ProviderService>>> getAllProviderServices(Pageable pageable) {
         log.info("Fetching all providerServices");
         Page<ProviderService> providerServices = providerServiceService.getAllProviderServices(pageable);
@@ -121,13 +89,6 @@ public class ProviderServiceController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a provider service", description = "Deletes a provider service")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Successfully deleted provider service"),
-            @ApiResponse(responseCode = "401", description = "You are not authorized to view the resource"),
-            @ApiResponse(responseCode = "403", description = "Accessing the resource you were trying to reach is forbidden"),
-            @ApiResponse(responseCode = "404", description = "The resource you were trying to reach is not found")
-    })
     public ResponseEntity<ApiSuccessResponse<Void>> deleteProviderService(@PathVariable UUID id) {
         log.info("Deleting providerService with id: {}", id);
         providerServiceService.deleteProviderService(id);

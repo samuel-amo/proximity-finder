@@ -29,12 +29,16 @@ public class AboutController {
     @GetMapping("/about-company")
     public ResponseEntity<AboutBusinessResponse> getAboutForAuthenticatedUser() {
         AboutBusinessResponse response = aboutService.getAboutForAuthenticatedUser();
-        return ResponseEntity.ok(response);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 
     @GetMapping("/provider-profile")
     public ResponseEntity<AboutAndPaymentMethodsResponse> getAboutAndPaymentMethods(@RequestParam String email) {
         AboutAndPaymentMethodsResponse response = aboutService.getAboutAndPaymentMethods(email);
-        return ResponseEntity.ok(response);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }

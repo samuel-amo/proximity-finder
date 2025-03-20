@@ -48,7 +48,7 @@ public class PasswordService {
             String token = tokenService.createPasswordResetToken(user);
             emailService.sendPasswordResetEmail(user, token);
         } catch (MessagingException e) {
-            // Handle the exceptions as needed, e.g., log the error or rethrow a custom exception
+
             throw new RuntimeException("Failed to initiate password reset", e);
         }
     }
